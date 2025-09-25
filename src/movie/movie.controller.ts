@@ -1,6 +1,7 @@
-import {Body, Controller, Get, Headers, Post, Query, Req, Res} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query, Req, Res} from '@nestjs/common';
 import {MovieService} from './movie.service';
-import type { Request, Response} from "express";
+import type {Request, Response} from "express";
+import {MovieDto} from "./dto/movie.dto";
 
 @Controller('movie')
 export class MovieController {
@@ -9,7 +10,12 @@ export class MovieController {
 
     @Get('all')
     findAll(@Query('genre') genre: string) {
-        return this.movieService.findAll(genre);
+        return this.movieService.findAll();
+    }
+
+    @Get(':id')
+    getById(@Param('id') id: string) {
+        return this.movieService.findById(id);
     }
 
     @Get('headers')
@@ -40,7 +46,18 @@ export class MovieController {
     }
 
     @Post()
-    create(@Body('title') title: string) {
-        return `Фильм ${title} был добавлен`
+    create(@Body() dto: MovieDto) {
+        return this.movieService.create(dto)
     }
+
+    @Patch("update/:id")
+    update(@Body() dto: MovieDto, @Param('id') id: string) {
+        return this.movieService.update(id, dto)
+    }
+
+    @Delete(":id")
+    delete(@Param('id') id: string) {
+        return this.movieService.delete(id)
+    }
+
 }
