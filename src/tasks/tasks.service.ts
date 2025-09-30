@@ -32,7 +32,7 @@ export class TasksService {
     }
 
     createTask(dto: CreateTaskDto) {
-        const {title, description,priority, tags} = dto;
+        const {title, description, priority, tags} = dto;
 
         const newTask = {
             title,
