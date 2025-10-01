@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {MiddlewareConsumer, Module, NestModule, RequestMethod} from '@nestjs/common';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import {MovieModule} from './movie/movie.module';
@@ -7,6 +7,7 @@ import {ReviewModule} from './review/review.module';
 import {ActorModule} from './actor/actor.module';
 import {PosterModule} from './poster/poster.module';
 import {PrismaModule} from './prisma/prisma.module';
+import {LoggerMiddleware} from "./common/middlewares/logger/logger.middleware";
 
 @Module({
     imports: [
@@ -21,7 +22,10 @@ import {PrismaModule} from './prisma/prisma.module';
         PrismaModule
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService,],
 })
-export class AppModule {
+export class AppModule implements NestModule{
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(LoggerMiddleware).forRoutes({path:'/movie/all', method: RequestMethod.GET});
+    }
 }
