@@ -1,6 +1,7 @@
-import {Body, Controller, Post} from '@nestjs/common';
+import {Body, Controller, Post, UsePipes} from '@nestjs/common';
 import {ReviewService} from './review.service';
 import {ReviewDto} from "./dto/review.dto";
+import {LowerCasePipe} from "../common/pipes/lower-case.pipe";
 
 @Controller('review')
 export class ReviewController {
@@ -9,7 +10,7 @@ export class ReviewController {
 
 
     @Post()
-    create(@Body() dto: ReviewDto,) {
-       return  this.reviewService.createReview(dto)
+    create(@Body() dto: ReviewDto) {
+        return this.reviewService.createReview(dto)
     }
 }

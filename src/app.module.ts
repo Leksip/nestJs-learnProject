@@ -7,7 +7,7 @@ import {ReviewModule} from './review/review.module';
 import {ActorModule} from './actor/actor.module';
 import {PosterModule} from './poster/poster.module';
 import {PrismaModule} from './prisma/prisma.module';
-import {LoggerMiddleware} from "./common/middlewares/logger/logger.middleware";
+import {LoggerMiddleware} from "./common/middlewares/logger.middleware";
 
 @Module({
     imports: [
