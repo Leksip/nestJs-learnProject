@@ -1,6 +1,7 @@
 import {Controller, Get, UseGuards} from '@nestjs/common';
 import { AppService } from './app.service';
 import {AuthGuard} from "./common/guards/auth.guard";
+import {UserAgent} from "./common/decorators/user-agent.decorator";
 
 @Controller()
 export class AppController {
@@ -13,10 +14,11 @@ export class AppController {
 
   @UseGuards(AuthGuard)
   @Get('me')
-  getProfile(){
+  getProfile(@UserAgent() userAgent: string){
     return {
       name: 'John',
       age: 30,
+      userAgent
     };
   }
 }
