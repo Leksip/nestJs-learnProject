@@ -10,7 +10,7 @@ export class AllExceptionsFilter<T> implements ExceptionFilter {
         const response = ctx.getResponse() as Response
         const status = exception instanceof HttpException ? exception.getStatus() : 500
         const message = exception instanceof HttpException ? exception.message : 'Internal server error'
-        this.logger.error(message, exception)
+        this.logger.error(message)
 
         response.status(status).json(
             {
