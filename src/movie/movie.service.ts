@@ -1,7 +1,7 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {MovieDto} from "./dto/movie.dto";
-import {Actor, Movie} from 'generated/prisma';
+import {Actor, Genre, Movie} from 'generated/prisma';
 
 @Injectable()
 export class MovieService {
@@ -10,11 +10,9 @@ export class MovieService {
     ) {
     }
 
-    async findAll(): Promise<any> {
+    async findAll(genre: Genre | undefined): Promise<any> {
         return this.prismaService.movie.findMany({
-            // where: {
-            //     isAvailable: true,
-            // },
+            where: genre ? { genre } : {},
             orderBy: {
                 createdAt: "desc"
             },
