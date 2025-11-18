@@ -1,13 +1,13 @@
 import {ConflictException, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
-import {RegisterRequestDto} from "./dto/register.dto";
 import {hash, verify} from "argon2";
 import {ConfigService} from "@nestjs/config";
 import {JwtService} from "@nestjs/jwt";
 import type {JwtPayload} from "./interfaces/jwt.interface";
-import {LoginRequestDto} from "./dto/login.dto";
 import type {Request, Response} from "express";
 import {isDev} from "../utils/is-dev.utils";
+import {RegisterInput} from "./inputs/register.input";
+import {LoginInput} from "./inputs/login.input";
 
 @Injectable()
 export class AuthService {
@@ -27,8 +27,8 @@ export class AuthService {
         this.COOKIE_DOMAIN = this.configService.getOrThrow('COOKIE_DOMAIN')
     }
 
-    public async register(res: Response, dto: RegisterRequestDto) {
-        const {name, email, password} = dto;
+    public async register(res: Response, input: RegisterInput) {
+        const {name, email, password} = input;
 
         const existUser = await this.prismaService.user.findUnique({
             where: {
@@ -52,7 +52,7 @@ export class AuthService {
     }
 
 
-    async login(res: Response, dto: LoginRequestDto) {
+    async login(res: Response, dto: LoginInput) {
         const {email, password} = dto;
 
         const user = await this.prismaService.user.findUnique({
@@ -81,12 +81,8 @@ export class AuthService {
     }
 
     async logOut(res: Response) {
-        res.clearCookie('refresh-token', {
-            httpOnly: true,
-            domain: this.COOKIE_DOMAIN,
-            secure: !isDev(this.configService),
-            sameSite: isDev(this.configService) ? 'none' : 'lax',
-        })
+        this.setCookies(res, 'refresh-token', new Date(0))
+        return true
     }
 
 
@@ -110,7 +106,7 @@ export class AuthService {
             domain: this.COOKIE_DOMAIN,
             expires: exp,
             secure: !isDev(this.configService),
-            sameSite: isDev(this.configService) ? 'none' : 'lax',
+            sameSite: 'lax',
         })
     }
 

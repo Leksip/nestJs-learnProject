@@ -1,20 +1,29 @@
 import {Module} from '@nestjs/common';
-import {AppController} from './app.controller';
-import {AppService} from './app.service';
-import {ConfigModule} from "@nestjs/config";
-import { AuthModule } from './auth/auth.module';
+import {ConfigModule, ConfigService} from "@nestjs/config";
 import {PrismaModule} from "./prisma/prisma.module";
+import {GraphQLModule} from "@nestjs/graphql";
+import {getGraphQlConfig} from "./config/graphql.config";
+import {ApolloDriver, ApolloDriverConfig} from "@nestjs/apollo";
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
         }),
+        GraphQLModule.forRootAsync({
+            driver: ApolloDriver,
+            imports: [ConfigModule],
+            useFactory: getGraphQlConfig,
+            inject: [ConfigService],
+        }),
+        PrismaModule,
         AuthModule,
-        PrismaModule
+        UserModule
     ],
-    controllers: [AppController],
-    providers: [AppService,],
+    controllers: [],
+    providers: [],
 })
 export class AppModule {
 }

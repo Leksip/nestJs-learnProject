@@ -1,0 +1,32 @@
+import {Args, Context, Mutation, Resolver} from '@nestjs/graphql';
+import {AuthService} from './auth.service';
+import type {GqlContext} from "../common/interfaces/gql-context.interface";
+import {AuthModel} from "./models/auth.model";
+import {RegisterInput} from "./inputs/register.input";
+import {LoginInput} from "./inputs/login.input";
+
+@Resolver()
+export class AuthResolver {
+    constructor(private readonly authService: AuthService) {
+    }
+
+    @Mutation(() => AuthModel)
+    async register(@Context() {res}: GqlContext, @Args('data') input: RegisterInput) {
+        return this.authService.register(res, input)
+    }
+
+    @Mutation(() => AuthModel)
+    async login(@Context() {res}: GqlContext, @Args('data') input: LoginInput) {
+        return this.authService.login(res, input)
+    }
+
+    @Mutation(() => AuthModel)
+    async refresh(@Context() {res, req}: GqlContext) {
+        return this.authService.refresh(res, req)
+    }
+
+    @Mutation(() => Boolean)
+    async logout(@Context() {res}: GqlContext) {
+        return this.authService.logOut(res)
+    }
+}
