@@ -8,80 +8,15 @@ datasource db {
   url      = env("DATABASE_URI")
 }
 
-model Movie {
-  id String @id @default(uuid(4))
 
-  title       String
-  description String?
+model Message {
+  id String @id @default(uuid())
 
-  releaseYear Int @map("release_year")
-
-  rating Float @default(0.0)
-
-  isAvailable Boolean @default(false)
-
-  genre Genre @default(DRAMA)
-
-  posterId String? @unique @map("poster_id")
-
-  reviews Review[] @relation("movie_reviews")
-  actors  Actor[]  @relation("movie_actors")
-  poster Poster? @relation(fields: [posterId], references: [id])
+  text String
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt() @map("updated_at")
 
-  @@map("movies")
+  @@map("messages")
 }
 
-
-model Poster{
-  id String @id @default(uuid(4))
-
-  url String
-
-  movie Movie?
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt() @map("updated_at")
-
-  @@map("posters")
-}
-
-model Review {
-  id String @id @default(uuid(4))
-
-  text   String
-  rating Decimal @default(0.0)
-
-  movieId String @map("movie_id")
-
-  movie Movie @relation("movie_reviews", fields: [movieId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt() @map("updated_at")
-
-  @@map("reviews")
-}
-
-model Actor {
-  id String @id @default(uuid(4))
-
-  name String
-
-  movies Movie[] @relation("movie_actors")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt() @map("updated_at")
-
-  @@map("actors")
-}
-
-enum Genre {
-  ACTION
-  HORROR
-  DRAMA
-  COMEDY
-
-  @@map("enum_geners")
-}
